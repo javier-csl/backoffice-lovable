@@ -1,0 +1,204 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    /* Rialfit Brand Colors */
+    --rialfit-blue: 220 91% 54%;
+    --rialfit-dark: 213 54% 10%;
+    
+    /* Light Theme */
+    --background: 220 20% 98%;
+    --foreground: 213 54% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 213 54% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 213 54% 10%;
+
+    --primary: 220 91% 54%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 213 54% 10%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 220 14% 94%;
+    --accent-foreground: 213 54% 10%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 220 91% 54%;
+
+    --radius: 0.5rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 215 16% 47%;
+    --sidebar-primary: 220 91% 54%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 213 54% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 220 91% 54%;
+
+    /* Kanban */
+    --kanban-column: 220 14% 97%;
+    --kanban-card: 0 0% 100%;
+    --kanban-card-hover: 220 14% 98%;
+
+    /* Status Colors */
+    --status-new: 220 91% 54%;
+    --status-contact-pending: 38 92% 50%;
+    --status-in-contact: 262 83% 58%;
+    --status-meeting: 280 67% 48%;
+    --status-negotiation: 199 89% 48%;
+    --status-won: 142 71% 45%;
+    --status-lost: 0 84% 60%;
+
+    /* RialFit Score Colors */
+    --rialfit-1: 0 84% 60%;
+    --rialfit-2: 25 95% 53%;
+    --rialfit-3: 38 92% 50%;
+    --rialfit-4: 142 71% 45%;
+    --rialfit-5: 220 91% 54%;
+  }
+
+  .dark {
+    --background: 222 47% 8%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 220 91% 54%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --success: 142 71% 35%;
+    --success-foreground: 210 40% 98%;
+
+    --warning: 38 92% 40%;
+    --warning-foreground: 210 40% 98%;
+
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 220 91% 54%;
+
+    /* Sidebar Dark */
+    --sidebar-background: 222 47% 6%;
+    --sidebar-foreground: 215 20% 65%;
+    --sidebar-primary: 220 91% 54%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 220 91% 54%;
+
+    /* Kanban Dark */
+    --kanban-column: 222 47% 10%;
+    --kanban-card: 222 47% 13%;
+    --kanban-card-hover: 222 47% 15%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  .sidebar-item {
+    @apply flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
+  }
+
+  .sidebar-item-active {
+    @apply bg-primary/10 text-primary font-medium;
+  }
+
+  .kpi-card {
+    @apply bg-card rounded-lg border border-border p-4 transition-shadow hover:shadow-sm;
+  }
+
+  .kanban-column {
+    @apply bg-kanban-column rounded-lg min-h-[500px] w-[280px] flex-shrink-0;
+  }
+
+  .kanban-card {
+    @apply bg-kanban-card rounded-md border border-border p-3 cursor-pointer transition-all hover:shadow-md hover:border-primary/20;
+  }
+
+  .badge-rialfit {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .tab-button {
+    @apply px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground border-b-2 border-transparent;
+  }
+
+  .tab-button-active {
+    @apply text-primary border-primary;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/30;
+  }
+}
