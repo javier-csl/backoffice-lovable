@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { MOCK_LEADS, MOCK_PROJECTS } from '@/data/mockData';
+import { MOCK_LEADS, MOCK_PROJECTS, getTopRialFitProject, getInterestProjectRialFit } from '@/data/mockData';
 import { Lead, LeadStatus, LEAD_STATUS_CONFIG, KANBAN_COLUMNS } from '@/types';
 import { RialFitBadge } from '@/components/common/RialFitBadge';
-import { OfeliaBadge } from '@/components/common/OfeliaBadge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -67,6 +67,10 @@ function LeadCard({ lead, index }: { lead: Lead; index: number }) {
     locale: es 
   });
 
+  const interest = getInterestProjectRialFit(lead.projectId);
+  const top = getTopRialFitProject(lead.projectId);
+  const showGap = !!(interest && top && top.score > interest.score);
+
   return (
     <Draggable draggableId={lead.id} index={index}>
       {(provided, snapshot) => (
@@ -83,47 +87,44 @@ function LeadCard({ lead, index }: { lead: Lead; index: number }) {
             <Link to={`/leads/${lead.id}`} className="flex-1 min-w-0">
               <h4 className="font-medium text-sm truncate hover:text-primary">{lead.name}</h4>
             </Link>
-            <div className="flex items-center gap-1.5">
-              <RialFitBadge score={lead.rialFitScore} showLabel={false} />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 -mr-1">
-                    <MoreHorizontal className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem asChild>
-                    <Link to={`/leads/${lead.id}`}>
-                      <Eye className="w-4 h-4 mr-2" />
-                      Ver lead
-                    </Link>
-                  </DropdownMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-7 w-7 -mr-1">
+                  <MoreHorizontal className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link to={`/leads/${lead.id}`}>
+                    <Eye className="w-4 h-4 mr-2" />
+                    Ver lead
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Phone className="w-4 h-4 mr-2" />
+                  Editar contacto
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <FileText className="w-4 h-4 mr-2" />
+                  Ver documentos
+                </DropdownMenuItem>
+                {lead.preEvaluationStatus !== 'pendiente' && (
                   <DropdownMenuItem>
-                    <Phone className="w-4 h-4 mr-2" />
-                    Editar contacto
+                    <Eye className="w-4 h-4 mr-2" />
+                    Ver pre-evaluación
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <FileText className="w-4 h-4 mr-2" />
-                    Ver documentos
-                  </DropdownMenuItem>
-                  {lead.preEvaluationStatus !== 'pendiente' && (
-                    <DropdownMenuItem>
-                      <Eye className="w-4 h-4 mr-2" />
-                      Ver pre-evaluación
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <RefreshCw className="w-4 h-4 mr-2" />
-                    Cambiar estado
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="text-destructive">
-                    <XCircle className="w-4 h-4 mr-2" />
-                    Marcar como perdido
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Cambiar estado
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive">
+                  <XCircle className="w-4 h-4 mr-2" />
+                  Marcar como perdido
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           
           <p className="text-xs text-muted-foreground mb-2">
@@ -135,12 +136,46 @@ function LeadCard({ lead, index }: { lead: Lead; index: number }) {
             <span className="text-xs text-muted-foreground">{lead.channel}</span>
           </div>
 
-          <div className="flex items-center justify-between pt-3 border-t border-border">
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Clock className="w-3.5 h-3.5" />
-              hace {timeAgo}
-            </div>
-            <OfeliaBadge status={lead.ofeliaStatus} />
+          {/* RialFit desglosado: expectativa (interés) vs realidad (top match) */}
+          <div className="grid grid-cols-2 gap-2 pt-3 border-t border-border">
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex flex-col gap-1 cursor-help">
+                    <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Interés</span>
+                    <RialFitBadge score={lead.rialFitScore} showLabel={false} />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  RialFit en proyecto de interés: <strong>{lead.projectName}</strong>
+                </TooltipContent>
+              </Tooltip>
+
+              {top && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex flex-col gap-1 items-end cursor-help">
+                      <span className={cn(
+                        'text-[10px] uppercase tracking-wide',
+                        showGap ? 'text-primary font-medium' : 'text-muted-foreground'
+                      )}>
+                        Top match
+                      </span>
+                      <RialFitBadge score={top.score} showLabel={false} />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    Mejor match disponible: <strong>{top.project.name}</strong>
+                    {showGap && <div className="text-xs opacity-80 mt-1">Oportunidad: ofrecer alternativa</div>}
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </TooltipProvider>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-3">
+            <Clock className="w-3.5 h-3.5" />
+            hace {timeAgo}
           </div>
         </div>
       )}
@@ -367,17 +402,20 @@ export default function Leads() {
                 <tr>
                   <th className="text-left p-4 font-medium text-xs">Lead</th>
                   <th className="text-left p-4 font-medium text-xs">Proyecto</th>
-                  <th className="text-left p-4 font-medium text-xs">RialFit</th>
+                  <th className="text-left p-4 font-medium text-xs">RialFit interés</th>
+                  <th className="text-left p-4 font-medium text-xs">Top match</th>
                   <th className="text-right p-4 font-medium text-xs">Ticket UF</th>
                   <th className="text-left p-4 font-medium text-xs">Canal</th>
                   <th className="text-left p-4 font-medium text-xs">Última actividad</th>
                   <th className="text-left p-4 font-medium text-xs">Estado</th>
-                  <th className="text-left p-4 font-medium text-xs">Ofelia</th>
                   <th className="text-center p-4 font-medium text-xs">Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredLeads.map((lead) => (
+                {filteredLeads.map((lead) => {
+                  const top = getTopRialFitProject(lead.projectId);
+                  const showGap = !!(top && top.score > lead.rialFitScore);
+                  return (
                   <tr key={lead.id} className="border-t border-border hover:bg-muted/30 transition-colors">
                     <td className="p-4">
                       <Link to={`/leads/${lead.id}`} className="font-medium text-sm hover:text-primary">
@@ -390,7 +428,22 @@ export default function Leads() {
                       <p className="text-xs text-muted-foreground">{lead.comuna}</p>
                     </td>
                     <td className="p-4">
-                      <RialFitBadge score={lead.rialFitScore} />
+                      <RialFitBadge score={lead.rialFitScore} showLabel={false} />
+                    </td>
+                    <td className="p-4">
+                      {top ? (
+                        <div className="flex flex-col gap-1">
+                          <RialFitBadge score={top.score} showLabel={false} />
+                          <span className={cn(
+                            'text-[10px] truncate max-w-[140px]',
+                            showGap ? 'text-primary font-medium' : 'text-muted-foreground'
+                          )}>
+                            {top.project.name}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
                     </td>
                     <td className="p-4 text-right text-sm font-medium">{lead.ticketUF.toLocaleString()}</td>
                     <td className="p-4">
@@ -405,9 +458,6 @@ export default function Leads() {
                         <span className={cn('w-2.5 h-2.5 rounded-full', LEAD_STATUS_CONFIG[lead.status].color)} />
                         <span className="text-sm">{LEAD_STATUS_CONFIG[lead.status].label}</span>
                       </span>
-                    </td>
-                    <td className="p-4">
-                      <OfeliaBadge status={lead.ofeliaStatus} />
                     </td>
                     <td className="p-4">
                       <div className="flex items-center justify-center gap-1">
@@ -440,7 +490,8 @@ export default function Leads() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>

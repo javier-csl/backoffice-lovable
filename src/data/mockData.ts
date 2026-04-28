@@ -385,3 +385,25 @@ export function getProjectById(id: string): Project | undefined {
 export function getMeetingsByLeadId(leadId: string): Meeting[] {
   return MOCK_MEETINGS.filter(meeting => meeting.leadId === leadId);
 }
+
+import type { RialFitScore } from '@/types';
+
+/**
+ * Devuelve el proyecto con mayor RialFit promedio entre los proyectos activos.
+ * Sirve como "expectativa" (mejor match disponible) frente al proyecto de interés del lead.
+ */
+export function getTopRialFitProject(excludeProjectId?: string): { project: Project; score: RialFitScore } | null {
+  const candidates = MOCK_PROJECTS.filter(p => p.status === 'activo' && p.id !== excludeProjectId);
+  if (candidates.length === 0) return null;
+  const top = candidates.reduce((best, p) => (p.rialFitAvg > best.rialFitAvg ? p : best));
+  const score = Math.max(1, Math.min(5, Math.round(top.rialFitAvg))) as RialFitScore;
+  return { project: top, score };
+}
+
+/** RialFit del proyecto de interés del lead (basado en el promedio del proyecto). */
+export function getInterestProjectRialFit(projectId: string): { project: Project; score: RialFitScore } | null {
+  const project = getProjectById(projectId);
+  if (!project) return null;
+  const score = Math.max(1, Math.min(5, Math.round(project.rialFitAvg))) as RialFitScore;
+  return { project, score };
+}
