@@ -58,7 +58,7 @@ function FitRow({ glosa, projectName, score, size = 'md', className }: FitRowPro
       </div>
       <div
         className={cn(
-          'flex items-center justify-center rounded-md border-2 bg-card font-semibold tabular-nums shrink-0',
+          'flex items-center justify-center rounded-md border bg-card font-semibold tabular-nums shrink-0',
           scoreSize,
           SCORE_TEXT[score],
           SCORE_BORDER[score],
