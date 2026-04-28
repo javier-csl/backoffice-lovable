@@ -104,16 +104,24 @@ export default function LeadDetail() {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-1 flex-wrap">
               <h1 className="text-xl font-semibold">{lead.name}</h1>
-              <Badge variant="secondary" className="font-normal">
-                {lead.projectName}
-              </Badge>
               <RialFitBadge score={lead.rialFitScore} size="md" />
             </div>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
-                {lead.comuna}
-              </span>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
+              {(() => {
+                const top = getTopRialFitProject(lead.projectId);
+                const comunas = Array.from(
+                  new Set(
+                    [lead.comuna, top?.project.comuna, 'Providencia', 'Ñuñoa'].filter(Boolean) as string[],
+                  ),
+                ).slice(0, 3);
+                return (
+                  <span className="flex items-center gap-1">
+                    <MapPin className="w-3 h-3" />
+                    <span>Comunas que busca:</span>
+                    <span className="text-foreground font-medium">{comunas.join(', ')}</span>
+                  </span>
+                );
+              })()}
               <span className="flex items-center gap-1">
                 <Clock className="w-3 h-3" />
                 Última actividad: {formatDistanceToNow(new Date(lead.lastActivity), { addSuffix: true, locale: es })}
