@@ -47,9 +47,6 @@ function FitRow({ glosa, projectName, score, size = 'md', className }: FitRowPro
         )}>
           {projectName}
         </p>
-        <p className={cn('truncate leading-tight', size === 'sm' ? 'text-[10px]' : 'text-xs', SCORE_TEXT[score])}>
-          {RIALFIT_LABELS[score]}
-        </p>
       </div>
       <div
         className={cn(
