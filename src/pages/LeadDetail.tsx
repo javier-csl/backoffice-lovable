@@ -556,7 +556,7 @@ export default function LeadDetail() {
                           <span className="text-xs text-muted-foreground">{activity.user}</span>
                           <span className="text-xs text-muted-foreground">·</span>
                           <span className="text-xs text-muted-foreground">
-                            {format(new Date(activity.date), "d MMM, HH:mm", { locale: es })}
+                            {format(new Date(activity.date), "dd/MM/yyyy HH:mm")}
                           </span>
                         </div>
                       </div>
