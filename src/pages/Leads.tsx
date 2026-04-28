@@ -402,22 +402,13 @@ export default function Leads() {
                       <p className="text-xs text-muted-foreground">{lead.comuna}</p>
                     </td>
                     <td className="p-4">
-                      <RialFitBadge score={lead.rialFitScore} showLabel={false} />
-                    </td>
-                    <td className="p-4">
-                      {top ? (
-                        <div className="flex flex-col gap-1">
-                          <RialFitBadge score={top.score} showLabel={false} />
-                          <span className={cn(
-                            'text-[10px] truncate max-w-[140px]',
-                            showGap ? 'text-primary font-medium' : 'text-muted-foreground'
-                          )}>
-                            {top.project.name}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">—</span>
-                      )}
+                      <RialFitCompare
+                        variant="inline"
+                        interestScore={lead.rialFitScore}
+                        interestProjectName={lead.projectName}
+                        topScore={top?.score}
+                        topProjectName={top?.project.name}
+                      />
                     </td>
                     <td className="p-4 text-right text-sm font-medium">{lead.ticketUF.toLocaleString()}</td>
                     <td className="p-4">
