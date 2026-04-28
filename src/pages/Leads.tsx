@@ -388,7 +388,6 @@ export default function Leads() {
               <tbody>
                 {filteredLeads.map((lead) => {
                   const top = getTopRialFitProject(lead.projectId);
-                  const showGap = !!(top && top.score > lead.rialFitScore);
                   return (
                   <tr key={lead.id} className="border-t border-border hover:bg-muted/30 transition-colors">
                     <td className="p-4">
