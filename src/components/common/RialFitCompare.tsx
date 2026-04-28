@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
-import { RialFitScore } from '@/types';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { RialFitScore, RIALFIT_LABELS } from '@/types';
+import { TrendingUp } from 'lucide-react';
 
 interface RialFitCompareProps {
   interestScore: RialFitScore;
@@ -11,12 +11,12 @@ interface RialFitCompareProps {
   className?: string;
 }
 
-const SCORE_COLORS: Record<RialFitScore, string> = {
-  1: 'bg-rialfit-1',
-  2: 'bg-rialfit-2',
-  3: 'bg-rialfit-3',
-  4: 'bg-rialfit-4',
-  5: 'bg-rialfit-5',
+const SCORE_RING: Record<RialFitScore, string> = {
+  1: 'text-rialfit-1 border-rialfit-1/30 bg-rialfit-1/5',
+  2: 'text-rialfit-2 border-rialfit-2/30 bg-rialfit-2/5',
+  3: 'text-rialfit-3 border-rialfit-3/30 bg-rialfit-3/5',
+  4: 'text-rialfit-4 border-rialfit-4/30 bg-rialfit-4/5',
+  5: 'text-rialfit-5 border-rialfit-5/30 bg-rialfit-5/5',
 };
 
 const SCORE_TEXT: Record<RialFitScore, string> = {
@@ -27,24 +27,64 @@ const SCORE_TEXT: Record<RialFitScore, string> = {
   5: 'text-rialfit-5',
 };
 
-/** Mini barra segmentada 1-5 que muestra el score como una "señal". */
-function FitBars({ score, className }: { score: RialFitScore; className?: string }) {
+interface FitCardProps {
+  glosa: string;
+  projectName: string;
+  score: RialFitScore;
+  size?: 'sm' | 'md' | 'lg';
+  highlight?: boolean;
+  className?: string;
+}
+
+/**
+ * Card unitaria de RialFit:
+ *  - Glosa arriba (Máximo RialFit / RialFit en [Proyecto])
+ *  - Score grande
+ *  - Etiqueta cualitativa pequeña
+ */
+function FitCard({ glosa, projectName, score, size = 'md', highlight, className }: FitCardProps) {
+  const scoreSize = size === 'sm' ? 'text-lg' : size === 'lg' ? 'text-3xl' : 'text-2xl';
+  const padding = size === 'sm' ? 'p-2' : 'p-3';
+
   return (
-    <div className={cn('flex items-end gap-0.5', className)}>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <div
-          key={i}
-          className={cn(
-            'w-1 rounded-sm transition-colors',
-            i === 1 && 'h-1.5',
-            i === 2 && 'h-2',
-            i === 3 && 'h-2.5',
-            i === 4 && 'h-3',
-            i === 5 && 'h-3.5',
-            i <= score ? SCORE_COLORS[score] : 'bg-muted'
-          )}
-        />
-      ))}
+    <div
+      className={cn(
+        'rounded-md border flex items-center gap-2.5',
+        padding,
+        highlight ? 'border-primary/40 bg-primary/5' : 'border-border bg-card',
+        className,
+      )}
+    >
+      {/* Score circular */}
+      <div
+        className={cn(
+          'flex items-center justify-center rounded-md border font-semibold tabular-nums shrink-0',
+          SCORE_RING[score],
+          scoreSize,
+          size === 'sm' ? 'w-9 h-9' : size === 'lg' ? 'w-14 h-14' : 'w-11 h-11',
+        )}
+      >
+        {score}
+      </div>
+
+      {/* Texto */}
+      <div className="min-w-0 flex-1">
+        <p className={cn(
+          'text-muted-foreground uppercase tracking-wide leading-tight',
+          size === 'sm' ? 'text-[9px]' : 'text-[10px]',
+        )}>
+          {glosa}
+        </p>
+        <p className={cn(
+          'font-medium truncate leading-tight',
+          size === 'sm' ? 'text-xs' : 'text-sm',
+        )}>
+          {projectName}
+        </p>
+        <p className={cn('truncate leading-tight', size === 'sm' ? 'text-[10px]' : 'text-xs', SCORE_TEXT[score])}>
+          {RIALFIT_LABELS[score]}
+        </p>
+      </div>
     </div>
   );
 }
@@ -59,106 +99,70 @@ export function RialFitCompare({
 }: RialFitCompareProps) {
   const delta = topScore ? topScore - interestScore : 0;
   const hasGap = delta > 0;
+  const showTop = !!(topScore && topProjectName);
 
-  // Compact: para cards de kanban — 1 fila, mínima altura
+  // Compact: para cards de Kanban — dos cards apiladas, mínimas
   if (variant === 'compact') {
     return (
-      <TooltipProvider delayDuration={200}>
-        <div className={cn('flex items-center justify-between gap-2', className)}>
-          {/* Lado izquierdo: score del proyecto de interés (ya nombrado en la card) */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center gap-1.5 cursor-help">
-                <FitBars score={interestScore} />
-                <span className={cn('text-xs font-semibold tabular-nums', SCORE_TEXT[interestScore])}>
-                  {interestScore}
-                </span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">
-              <div className="text-xs">RialFit en proyecto de interés</div>
-              <div className="font-medium">{interestProjectName}: {interestScore}/5</div>
-            </TooltipContent>
-          </Tooltip>
-
-          {/* Separador / delta */}
-          {topScore && topProjectName && (
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <span className="text-[10px]">→</span>
-              {hasGap && (
-                <span className="text-[9px] font-bold text-primary bg-primary/10 px-1 rounded leading-tight">
-                  +{delta}
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* Lado derecho: top match con nombre */}
-          {topScore && topProjectName && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex items-center gap-1.5 cursor-help min-w-0 flex-1 justify-end">
-                  <span className={cn(
-                    'text-[10px] truncate',
-                    hasGap ? 'text-primary font-medium' : 'text-muted-foreground'
-                  )}>
-                    {topProjectName}
-                  </span>
-                  <span className={cn('text-xs font-semibold tabular-nums', SCORE_TEXT[topScore])}>
-                    {topScore}
-                  </span>
-                  <FitBars score={topScore} />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <div className="text-xs">Mejor match disponible</div>
-                <div className="font-medium">{topProjectName}: {topScore}/5</div>
-                {hasGap && <div className="text-xs opacity-80 mt-0.5">Brecha: +{delta} vs interés</div>}
-              </TooltipContent>
-            </Tooltip>
-          )}
-        </div>
-      </TooltipProvider>
-    );
-  }
-
-  // Inline: para tabla — una celda
-  if (variant === 'inline') {
-    return (
-      <div className={cn('flex flex-col gap-0.5', className)}>
-        <div className="flex items-center gap-2">
-          <span className={cn('text-sm font-semibold tabular-nums', SCORE_TEXT[interestScore])}>
-            {interestScore}
-          </span>
-          {topScore && (
-            <>
-              <span className="text-muted-foreground text-xs">→</span>
-              <span className={cn('text-sm font-semibold tabular-nums', SCORE_TEXT[topScore])}>
-                {topScore}
+      <div className={cn('space-y-1.5', className)}>
+        <FitCard
+          glosa="RialFit proyecto interés"
+          projectName={interestProjectName}
+          score={interestScore}
+          size="sm"
+        />
+        {showTop && (
+          <div className="relative">
+            <FitCard
+              glosa="Máximo RialFit"
+              projectName={topProjectName!}
+              score={topScore!}
+              size="sm"
+              highlight={hasGap}
+            />
+            {hasGap && (
+              <span className="absolute -top-1.5 -right-1.5 text-[9px] font-bold text-primary-foreground bg-primary px-1.5 py-0.5 rounded-full leading-none flex items-center gap-0.5 shadow-sm">
+                <TrendingUp className="w-2.5 h-2.5" />+{delta}
               </span>
-              {hasGap && (
-                <span className="text-[10px] font-bold text-primary bg-primary/10 px-1 rounded">
-                  +{delta}
-                </span>
-              )}
-            </>
-          )}
-        </div>
-        {topProjectName && hasGap && (
-          <span className="text-[10px] text-primary truncate max-w-[160px]">
-            mejor: {topProjectName}
-          </span>
-        )}
-        {topProjectName && !hasGap && (
-          <span className="text-[10px] text-muted-foreground truncate max-w-[160px]">
-            top: {topProjectName}
-          </span>
+            )}
+          </div>
         )}
       </div>
     );
   }
 
-  // Detailed: para vista detalle — dos columnas con barras grandes
+  // Inline: para tabla — dos mini cards lado a lado
+  if (variant === 'inline') {
+    return (
+      <div className={cn('flex items-center gap-2 min-w-[280px]', className)}>
+        <FitCard
+          glosa="RialFit interés"
+          projectName={interestProjectName}
+          score={interestScore}
+          size="sm"
+          className="flex-1"
+        />
+        {showTop && (
+          <div className="relative flex-1">
+            <FitCard
+              glosa="Máximo RialFit"
+              projectName={topProjectName!}
+              score={topScore!}
+              size="sm"
+              highlight={hasGap}
+            />
+            {hasGap && (
+              <span className="absolute -top-1.5 -right-1.5 text-[9px] font-bold text-primary-foreground bg-primary px-1.5 py-0.5 rounded-full leading-none shadow-sm">
+                +{delta}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Detailed: vista detalle — dos cards grandes con glosa contextual
   return (
     <div className={cn('space-y-2', className)}>
       <div className="flex items-center justify-between">
@@ -166,42 +170,27 @@ export function RialFitCompare({
           RialFit – expectativa vs realidad
         </p>
         {hasGap && (
-          <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-            +{delta} mejor en otro proyecto
+          <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded inline-flex items-center gap-1">
+            <TrendingUp className="w-3 h-3" />+{delta} en otro proyecto
           </span>
         )}
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        {/* Interés */}
-        <div className="rounded-md border border-border p-2.5">
-          <p className="text-[10px] text-muted-foreground mb-0.5">Proyecto de interés</p>
-          <p className="text-xs font-medium truncate mb-2">{interestProjectName}</p>
-          <div className="flex items-end justify-between gap-2">
-            <FitBars score={interestScore} className="scale-150 origin-bottom-left" />
-            <span className={cn('text-2xl font-semibold tabular-nums leading-none', SCORE_TEXT[interestScore])}>
-              {interestScore}
-              <span className="text-xs text-muted-foreground font-normal">/5</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Top */}
-        {topScore && topProjectName && (
-          <div className={cn(
-            'rounded-md border p-2.5',
-            hasGap ? 'border-primary/40 bg-primary/5' : 'border-border'
-          )}>
-            <p className="text-[10px] text-muted-foreground mb-0.5">Top match disponible</p>
-            <p className="text-xs font-medium truncate mb-2">{topProjectName}</p>
-            <div className="flex items-end justify-between gap-2">
-              <FitBars score={topScore} className="scale-150 origin-bottom-left" />
-              <span className={cn('text-2xl font-semibold tabular-nums leading-none', SCORE_TEXT[topScore])}>
-                {topScore}
-                <span className="text-xs text-muted-foreground font-normal">/5</span>
-              </span>
-            </div>
-          </div>
+        <FitCard
+          glosa="RialFit proyecto de interés"
+          projectName={interestProjectName}
+          score={interestScore}
+          size="lg"
+        />
+        {showTop && (
+          <FitCard
+            glosa="Máximo RialFit disponible"
+            projectName={topProjectName!}
+            score={topScore!}
+            size="lg"
+            highlight={hasGap}
+          />
         )}
       </div>
 
