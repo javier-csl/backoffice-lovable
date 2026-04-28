@@ -398,7 +398,7 @@ export default function LeadDetail() {
                   </div>
                   <div className="text-right">
                     <p className="text-lg font-semibold">{Math.round(documentProgress)}%</p>
-                    <OfeliaBadge status={lead.ofeliaStatus} size="md" />
+                    
                   </div>
                 </div>
                 <Progress value={documentProgress} className="h-2" />
