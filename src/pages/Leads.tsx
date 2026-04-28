@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { MOCK_LEADS, MOCK_PROJECTS } from '@/data/mockData';
+import { MOCK_LEADS, MOCK_PROJECTS, getTopRialFitProject, getInterestProjectRialFit } from '@/data/mockData';
 import { Lead, LeadStatus, LEAD_STATUS_CONFIG, KANBAN_COLUMNS } from '@/types';
 import { RialFitBadge } from '@/components/common/RialFitBadge';
-import { OfeliaBadge } from '@/components/common/OfeliaBadge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
