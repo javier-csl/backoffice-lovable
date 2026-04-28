@@ -396,7 +396,7 @@ export default function LeadDetail() {
                 </div>
                 <div className="pt-2 border-t border-border">
                   <p className="text-[10px] text-muted-foreground">Fecha de screening</p>
-                  <p className="text-sm">{format(new Date(lead.createdAt), "d 'de' MMMM, yyyy", { locale: es })}</p>
+                  <p className="text-sm">{format(new Date(lead.createdAt), 'dd/MM/yyyy')}</p>
                 </div>
               </CardContent>
             </Card>
@@ -556,7 +556,7 @@ export default function LeadDetail() {
                           <span className="text-xs text-muted-foreground">{activity.user}</span>
                           <span className="text-xs text-muted-foreground">·</span>
                           <span className="text-xs text-muted-foreground">
-                            {format(new Date(activity.date), "d MMM, HH:mm", { locale: es })}
+                            {format(new Date(activity.date), "dd/MM/yyyy HH:mm")}
                           </span>
                         </div>
                       </div>
@@ -606,7 +606,7 @@ export default function LeadDetail() {
                       {meetings.map((meeting) => (
                         <tr key={meeting.id} className="border-t border-border">
                           <td className="p-3">
-                            <p className="font-medium">{format(new Date(meeting.date), 'd MMM yyyy', { locale: es })}</p>
+                            <p className="font-medium">{format(new Date(meeting.date), 'dd/MM/yyyy')}</p>
                             <p className="text-xs text-muted-foreground">{meeting.time}</p>
                           </td>
                           <td className="p-3 capitalize">{meeting.type}</td>
