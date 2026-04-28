@@ -4,6 +4,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import { MOCK_LEADS, MOCK_PROJECTS, getTopRialFitProject, getInterestProjectRialFit } from '@/data/mockData';
 import { Lead, LeadStatus, LEAD_STATUS_CONFIG, KANBAN_COLUMNS } from '@/types';
 import { RialFitBadge } from '@/components/common/RialFitBadge';
+import { RialFitCompare } from '@/components/common/RialFitCompare';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -137,40 +138,14 @@ function LeadCard({ lead, index }: { lead: Lead; index: number }) {
           </div>
 
           {/* RialFit desglosado: expectativa (interés) vs realidad (top match) */}
-          <div className="grid grid-cols-2 gap-2 pt-3 border-t border-border">
-            <TooltipProvider delayDuration={200}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex flex-col gap-1 cursor-help">
-                    <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Interés</span>
-                    <RialFitBadge score={lead.rialFitScore} showLabel={false} />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  RialFit en proyecto de interés: <strong>{lead.projectName}</strong>
-                </TooltipContent>
-              </Tooltip>
-
-              {top && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex flex-col gap-1 items-end cursor-help">
-                      <span className={cn(
-                        'text-[10px] uppercase tracking-wide',
-                        showGap ? 'text-primary font-medium' : 'text-muted-foreground'
-                      )}>
-                        Top match
-                      </span>
-                      <RialFitBadge score={top.score} showLabel={false} />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    Mejor match disponible: <strong>{top.project.name}</strong>
-                    {showGap && <div className="text-xs opacity-80 mt-1">Oportunidad: ofrecer alternativa</div>}
-                  </TooltipContent>
-                </Tooltip>
-              )}
-            </TooltipProvider>
+          <div className="pt-3 border-t border-border">
+            <RialFitCompare
+              variant="compact"
+              interestScore={lead.rialFitScore}
+              interestProjectName={lead.projectName}
+              topScore={top?.score}
+              topProjectName={top?.project.name}
+            />
           </div>
 
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-3">
@@ -402,8 +377,7 @@ export default function Leads() {
                 <tr>
                   <th className="text-left p-4 font-medium text-xs">Lead</th>
                   <th className="text-left p-4 font-medium text-xs">Proyecto</th>
-                  <th className="text-left p-4 font-medium text-xs">RialFit interés</th>
-                  <th className="text-left p-4 font-medium text-xs">Top match</th>
+                  <th className="text-left p-4 font-medium text-xs">RialFit (interés → top)</th>
                   <th className="text-right p-4 font-medium text-xs">Ticket UF</th>
                   <th className="text-left p-4 font-medium text-xs">Canal</th>
                   <th className="text-left p-4 font-medium text-xs">Última actividad</th>
@@ -414,7 +388,6 @@ export default function Leads() {
               <tbody>
                 {filteredLeads.map((lead) => {
                   const top = getTopRialFitProject(lead.projectId);
-                  const showGap = !!(top && top.score > lead.rialFitScore);
                   return (
                   <tr key={lead.id} className="border-t border-border hover:bg-muted/30 transition-colors">
                     <td className="p-4">
@@ -428,22 +401,13 @@ export default function Leads() {
                       <p className="text-xs text-muted-foreground">{lead.comuna}</p>
                     </td>
                     <td className="p-4">
-                      <RialFitBadge score={lead.rialFitScore} showLabel={false} />
-                    </td>
-                    <td className="p-4">
-                      {top ? (
-                        <div className="flex flex-col gap-1">
-                          <RialFitBadge score={top.score} showLabel={false} />
-                          <span className={cn(
-                            'text-[10px] truncate max-w-[140px]',
-                            showGap ? 'text-primary font-medium' : 'text-muted-foreground'
-                          )}>
-                            {top.project.name}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">—</span>
-                      )}
+                      <RialFitCompare
+                        variant="inline"
+                        interestScore={lead.rialFitScore}
+                        interestProjectName={lead.projectName}
+                        topScore={top?.score}
+                        topProjectName={top?.project.name}
+                      />
                     </td>
                     <td className="p-4 text-right text-sm font-medium">{lead.ticketUF.toLocaleString()}</td>
                     <td className="p-4">

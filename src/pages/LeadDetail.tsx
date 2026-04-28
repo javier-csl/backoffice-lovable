@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getLeadById, getMeetingsByLeadId, MOCK_ACTIVITY, MOCK_DOCUMENTS, getTopRialFitProject, getInterestProjectRialFit } from '@/data/mockData';
 import { RialFitBadge } from '@/components/common/RialFitBadge';
+import { RialFitCompare } from '@/components/common/RialFitCompare';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -106,26 +107,7 @@ export default function LeadDetail() {
               <Badge variant="secondary" className="font-normal">
                 {lead.projectName}
               </Badge>
-              <span className="inline-flex items-center gap-1.5 text-[11px]">
-                <span className="text-muted-foreground">Interés:</span>
-                <RialFitBadge score={lead.rialFitScore} showLabel={false} size="sm" />
-              </span>
-              {(() => {
-                const top = getTopRialFitProject(lead.projectId);
-                if (!top) return null;
-                const showGap = top.score > lead.rialFitScore;
-                return (
-                  <span className={cn(
-                    'inline-flex items-center gap-1.5 text-[11px]',
-                    showGap && 'font-medium'
-                  )}>
-                    <span className={cn('text-muted-foreground', showGap && 'text-primary')}>
-                      Top ({top.project.name}):
-                    </span>
-                    <RialFitBadge score={top.score} showLabel={false} size="sm" />
-                  </span>
-                );
-              })()}
+              <RialFitBadge score={lead.rialFitScore} size="md" />
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
@@ -284,39 +266,16 @@ export default function LeadDetail() {
                   </div>
                 </div>
                 {(() => {
-                  const interest = getInterestProjectRialFit(lead.projectId);
                   const top = getTopRialFitProject(lead.projectId);
-                  const showGap = !!(interest && top && top.score > interest.score);
                   return (
-                    <div className="pt-2 border-t border-border space-y-2">
-                      <div className="flex items-center justify-between">
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide">RialFit – expectativa vs realidad</p>
-                        {showGap && (
-                          <span className="text-[10px] text-primary font-medium">Brecha detectada</span>
-                        )}
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="rounded-md border border-border p-2">
-                          <p className="text-[10px] text-muted-foreground">Proyecto de interés</p>
-                          <p className="text-xs font-medium truncate mb-1">{lead.projectName}</p>
-                          <RialFitBadge score={lead.rialFitScore} showLabel={false} size="sm" />
-                        </div>
-                        {top && (
-                          <div className={cn(
-                            'rounded-md border p-2',
-                            showGap ? 'border-primary/40 bg-primary/5' : 'border-border'
-                          )}>
-                            <p className="text-[10px] text-muted-foreground">Top match</p>
-                            <p className="text-xs font-medium truncate mb-1">{top.project.name}</p>
-                            <RialFitBadge score={top.score} showLabel={false} size="sm" />
-                          </div>
-                        )}
-                      </div>
-                      {showGap && (
-                        <p className="text-[10px] text-muted-foreground">
-                          El lead encaja mejor en otro proyecto. Considera ofrecer alternativa.
-                        </p>
-                      )}
+                    <div className="pt-2 border-t border-border">
+                      <RialFitCompare
+                        variant="detailed"
+                        interestScore={lead.rialFitScore}
+                        interestProjectName={lead.projectName}
+                        topScore={top?.score}
+                        topProjectName={top?.project.name}
+                      />
                     </div>
                   );
                 })()}
