@@ -402,17 +402,20 @@ export default function Leads() {
                 <tr>
                   <th className="text-left p-4 font-medium text-xs">Lead</th>
                   <th className="text-left p-4 font-medium text-xs">Proyecto</th>
-                  <th className="text-left p-4 font-medium text-xs">RialFit</th>
+                  <th className="text-left p-4 font-medium text-xs">RialFit interés</th>
+                  <th className="text-left p-4 font-medium text-xs">Top match</th>
                   <th className="text-right p-4 font-medium text-xs">Ticket UF</th>
                   <th className="text-left p-4 font-medium text-xs">Canal</th>
                   <th className="text-left p-4 font-medium text-xs">Última actividad</th>
                   <th className="text-left p-4 font-medium text-xs">Estado</th>
-                  <th className="text-left p-4 font-medium text-xs">Ofelia</th>
                   <th className="text-center p-4 font-medium text-xs">Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredLeads.map((lead) => (
+                {filteredLeads.map((lead) => {
+                  const top = getTopRialFitProject(lead.projectId);
+                  const showGap = !!(top && top.score > lead.rialFitScore);
+                  return (
                   <tr key={lead.id} className="border-t border-border hover:bg-muted/30 transition-colors">
                     <td className="p-4">
                       <Link to={`/leads/${lead.id}`} className="font-medium text-sm hover:text-primary">
@@ -425,7 +428,22 @@ export default function Leads() {
                       <p className="text-xs text-muted-foreground">{lead.comuna}</p>
                     </td>
                     <td className="p-4">
-                      <RialFitBadge score={lead.rialFitScore} />
+                      <RialFitBadge score={lead.rialFitScore} showLabel={false} />
+                    </td>
+                    <td className="p-4">
+                      {top ? (
+                        <div className="flex flex-col gap-1">
+                          <RialFitBadge score={top.score} showLabel={false} />
+                          <span className={cn(
+                            'text-[10px] truncate max-w-[140px]',
+                            showGap ? 'text-primary font-medium' : 'text-muted-foreground'
+                          )}>
+                            {top.project.name}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
                     </td>
                     <td className="p-4 text-right text-sm font-medium">{lead.ticketUF.toLocaleString()}</td>
                     <td className="p-4">
@@ -440,9 +458,6 @@ export default function Leads() {
                         <span className={cn('w-2.5 h-2.5 rounded-full', LEAD_STATUS_CONFIG[lead.status].color)} />
                         <span className="text-sm">{LEAD_STATUS_CONFIG[lead.status].label}</span>
                       </span>
-                    </td>
-                    <td className="p-4">
-                      <OfeliaBadge status={lead.ofeliaStatus} />
                     </td>
                     <td className="p-4">
                       <div className="flex items-center justify-center gap-1">
