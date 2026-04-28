@@ -156,7 +156,7 @@ function LeadCard({ lead, index }: { lead: Lead; index: number }) {
 
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-3">
             <Clock className="w-3.5 h-3.5" />
-            hace {timeAgo}
+            {lastActivityDate}
           </div>
         </div>
       )}
