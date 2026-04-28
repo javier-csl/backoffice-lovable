@@ -51,7 +51,14 @@ function FitRow({ glosa, projectName, score, size = 'md', className }: FitRowPro
           {RIALFIT_LABELS[score]}
         </p>
       </div>
-      <div className={cn('font-semibold tabular-nums shrink-0', scoreSize, SCORE_TEXT[score])}>
+      <div
+        className={cn(
+          'flex items-center justify-center rounded-md border border-border bg-card font-semibold tabular-nums shrink-0',
+          scoreSize,
+          SCORE_TEXT[score],
+          size === 'sm' ? 'w-9 h-9' : size === 'lg' ? 'w-14 h-14' : 'w-11 h-11',
+        )}
+      >
         {score}
       </div>
     </div>
