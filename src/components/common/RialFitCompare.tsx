@@ -18,6 +18,14 @@ const SCORE_TEXT: Record<RialFitScore, string> = {
   5: 'text-rialfit-5',
 };
 
+const SCORE_BORDER: Record<RialFitScore, string> = {
+  1: 'border-rialfit-1',
+  2: 'border-rialfit-2',
+  3: 'border-rialfit-3',
+  4: 'border-rialfit-4',
+  5: 'border-rialfit-5',
+};
+
 interface FitRowProps {
   glosa: string;
   projectName: string;
@@ -31,7 +39,7 @@ interface FitRowProps {
  * Las filas se separan visualmente con un divisor (border-t) en el contenedor.
  */
 function FitRow({ glosa, projectName, score, size = 'md', className }: FitRowProps) {
-  const scoreSize = size === 'sm' ? 'text-xl' : size === 'lg' ? 'text-3xl' : 'text-2xl';
+  const scoreSize = size === 'sm' ? 'text-sm' : size === 'lg' ? 'text-xl' : 'text-base';
   return (
     <div className={cn('flex items-center gap-3 py-2', className)}>
       <div className="min-w-0 flex-1">
@@ -50,10 +58,11 @@ function FitRow({ glosa, projectName, score, size = 'md', className }: FitRowPro
       </div>
       <div
         className={cn(
-          'flex items-center justify-center rounded-md border border-border bg-card font-semibold tabular-nums shrink-0',
+          'flex items-center justify-center rounded-md border-2 bg-card font-semibold tabular-nums shrink-0',
           scoreSize,
           SCORE_TEXT[score],
-          size === 'sm' ? 'w-9 h-9' : size === 'lg' ? 'w-14 h-14' : 'w-11 h-11',
+          SCORE_BORDER[score],
+          size === 'sm' ? 'w-7 h-7' : size === 'lg' ? 'w-10 h-10' : 'w-8 h-8',
         )}
       >
         {score}
