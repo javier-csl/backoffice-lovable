@@ -4,6 +4,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import { MOCK_LEADS, MOCK_PROJECTS, getTopRialFitProject, getInterestProjectRialFit } from '@/data/mockData';
 import { Lead, LeadStatus, LEAD_STATUS_CONFIG, KANBAN_COLUMNS } from '@/types';
 import { RialFitBadge } from '@/components/common/RialFitBadge';
+import { RialFitCompare } from '@/components/common/RialFitCompare';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
