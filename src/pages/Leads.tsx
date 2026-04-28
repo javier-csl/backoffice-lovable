@@ -377,8 +377,7 @@ export default function Leads() {
                 <tr>
                   <th className="text-left p-4 font-medium text-xs">Lead</th>
                   <th className="text-left p-4 font-medium text-xs">Proyecto</th>
-                  <th className="text-left p-4 font-medium text-xs">RialFit interés</th>
-                  <th className="text-left p-4 font-medium text-xs">Top match</th>
+                  <th className="text-left p-4 font-medium text-xs">RialFit (interés → top)</th>
                   <th className="text-right p-4 font-medium text-xs">Ticket UF</th>
                   <th className="text-left p-4 font-medium text-xs">Canal</th>
                   <th className="text-left p-4 font-medium text-xs">Última actividad</th>
