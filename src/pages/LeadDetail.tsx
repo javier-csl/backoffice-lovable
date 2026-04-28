@@ -106,26 +106,7 @@ export default function LeadDetail() {
               <Badge variant="secondary" className="font-normal">
                 {lead.projectName}
               </Badge>
-              <span className="inline-flex items-center gap-1.5 text-[11px]">
-                <span className="text-muted-foreground">Interés:</span>
-                <RialFitBadge score={lead.rialFitScore} showLabel={false} size="sm" />
-              </span>
-              {(() => {
-                const top = getTopRialFitProject(lead.projectId);
-                if (!top) return null;
-                const showGap = top.score > lead.rialFitScore;
-                return (
-                  <span className={cn(
-                    'inline-flex items-center gap-1.5 text-[11px]',
-                    showGap && 'font-medium'
-                  )}>
-                    <span className={cn('text-muted-foreground', showGap && 'text-primary')}>
-                      Top ({top.project.name}):
-                    </span>
-                    <RialFitBadge score={top.score} showLabel={false} size="sm" />
-                  </span>
-                );
-              })()}
+              <RialFitBadge score={lead.rialFitScore} size="md" />
             </div>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
