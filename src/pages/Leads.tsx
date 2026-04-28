@@ -137,40 +137,14 @@ function LeadCard({ lead, index }: { lead: Lead; index: number }) {
           </div>
 
           {/* RialFit desglosado: expectativa (interés) vs realidad (top match) */}
-          <div className="grid grid-cols-2 gap-2 pt-3 border-t border-border">
-            <TooltipProvider delayDuration={200}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex flex-col gap-1 cursor-help">
-                    <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Interés</span>
-                    <RialFitBadge score={lead.rialFitScore} showLabel={false} />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  RialFit en proyecto de interés: <strong>{lead.projectName}</strong>
-                </TooltipContent>
-              </Tooltip>
-
-              {top && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex flex-col gap-1 items-end cursor-help">
-                      <span className={cn(
-                        'text-[10px] uppercase tracking-wide',
-                        showGap ? 'text-primary font-medium' : 'text-muted-foreground'
-                      )}>
-                        Top match
-                      </span>
-                      <RialFitBadge score={top.score} showLabel={false} />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    Mejor match disponible: <strong>{top.project.name}</strong>
-                    {showGap && <div className="text-xs opacity-80 mt-1">Oportunidad: ofrecer alternativa</div>}
-                  </TooltipContent>
-                </Tooltip>
-              )}
-            </TooltipProvider>
+          <div className="pt-3 border-t border-border">
+            <RialFitCompare
+              variant="compact"
+              interestScore={lead.rialFitScore}
+              interestProjectName={lead.projectName}
+              topScore={top?.score}
+              topProjectName={top?.project.name}
+            />
           </div>
 
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-3">
