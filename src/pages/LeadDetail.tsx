@@ -606,7 +606,7 @@ export default function LeadDetail() {
                       {meetings.map((meeting) => (
                         <tr key={meeting.id} className="border-t border-border">
                           <td className="p-3">
-                            <p className="font-medium">{format(new Date(meeting.date), 'd MMM yyyy', { locale: es })}</p>
+                            <p className="font-medium">{format(new Date(meeting.date), 'dd/MM/yyyy')}</p>
                             <p className="text-xs text-muted-foreground">{meeting.time}</p>
                           </td>
                           <td className="p-3 capitalize">{meeting.type}</td>
