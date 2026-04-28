@@ -63,10 +63,7 @@ function groupLeadsByStatus(leads: Lead[]): KanbanLeads {
 }
 
 function LeadCard({ lead, index }: { lead: Lead; index: number }) {
-  const timeAgo = formatDistanceToNow(new Date(lead.lastActivity), { 
-    addSuffix: false, 
-    locale: es 
-  });
+  const lastActivityDate = format(new Date(lead.lastActivity), 'dd/MM/yyyy');
 
   const interest = getInterestProjectRialFit(lead.projectId);
   const top = getTopRialFitProject(lead.projectId);
