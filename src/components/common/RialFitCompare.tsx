@@ -65,45 +65,55 @@ export function RialFitCompare({
     return (
       <TooltipProvider delayDuration={200}>
         <div className={cn('flex items-center justify-between gap-2', className)}>
+          {/* Lado izquierdo: score del proyecto de interés (ya nombrado en la card) */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="flex items-center gap-1.5 cursor-help min-w-0">
+              <div className="flex items-center gap-1.5 cursor-help">
                 <FitBars score={interestScore} />
                 <span className={cn('text-xs font-semibold tabular-nums', SCORE_TEXT[interestScore])}>
                   {interestScore}
                 </span>
-                <span className="text-[10px] text-muted-foreground truncate">interés</span>
               </div>
             </TooltipTrigger>
             <TooltipContent side="bottom">
-              RialFit en proyecto de interés: <strong>{interestProjectName}</strong>
+              <div className="text-xs">RialFit en proyecto de interés</div>
+              <div className="font-medium">{interestProjectName}: {interestScore}/5</div>
             </TooltipContent>
           </Tooltip>
 
+          {/* Separador / delta */}
+          {topScore && topProjectName && (
+            <div className="flex items-center gap-1 text-muted-foreground">
+              <span className="text-[10px]">→</span>
+              {hasGap && (
+                <span className="text-[9px] font-bold text-primary bg-primary/10 px-1 rounded leading-tight">
+                  +{delta}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Lado derecho: top match con nombre */}
           {topScore && topProjectName && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex items-center gap-1.5 cursor-help min-w-0">
+                <div className="flex items-center gap-1.5 cursor-help min-w-0 flex-1 justify-end">
                   <span className={cn(
-                    'text-[10px] truncate max-w-[80px]',
+                    'text-[10px] truncate',
                     hasGap ? 'text-primary font-medium' : 'text-muted-foreground'
                   )}>
-                    mejor: {topProjectName}
+                    {topProjectName}
                   </span>
                   <span className={cn('text-xs font-semibold tabular-nums', SCORE_TEXT[topScore])}>
                     {topScore}
                   </span>
                   <FitBars score={topScore} />
-                  {hasGap && (
-                    <span className="text-[9px] font-bold text-primary bg-primary/10 px-1 rounded">
-                      +{delta}
-                    </span>
-                  )}
                 </div>
               </TooltipTrigger>
               <TooltipContent side="bottom">
-                Mejor match: <strong>{topProjectName}</strong>
-                {hasGap && <div className="text-xs opacity-80 mt-0.5">Oportunidad: ofrecer alternativa (+{delta})</div>}
+                <div className="text-xs">Mejor match disponible</div>
+                <div className="font-medium">{topProjectName}: {topScore}/5</div>
+                {hasGap && <div className="text-xs opacity-80 mt-0.5">Brecha: +{delta} vs interés</div>}
               </TooltipContent>
             </Tooltip>
           )}
