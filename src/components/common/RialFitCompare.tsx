@@ -1,6 +1,5 @@
 import { cn } from '@/lib/utils';
 import { RialFitScore, RIALFIT_LABELS } from '@/types';
-import { TrendingUp } from 'lucide-react';
 
 interface RialFitCompareProps {
   interestScore: RialFitScore;
@@ -11,14 +10,6 @@ interface RialFitCompareProps {
   className?: string;
 }
 
-const SCORE_RING: Record<RialFitScore, string> = {
-  1: 'text-rialfit-1 border-border bg-card',
-  2: 'text-rialfit-2 border-border bg-card',
-  3: 'text-rialfit-3 border-border bg-card',
-  4: 'text-rialfit-4 border-border bg-card',
-  5: 'text-rialfit-5 border-border bg-card',
-};
-
 const SCORE_TEXT: Record<RialFitScore, string> = {
   1: 'text-rialfit-1',
   2: 'text-rialfit-2',
@@ -27,46 +18,22 @@ const SCORE_TEXT: Record<RialFitScore, string> = {
   5: 'text-rialfit-5',
 };
 
-interface FitCardProps {
+interface FitRowProps {
   glosa: string;
   projectName: string;
   score: RialFitScore;
   size?: 'sm' | 'md' | 'lg';
-  highlight?: boolean;
   className?: string;
 }
 
 /**
- * Card unitaria de RialFit:
- *  - Glosa arriba (Máximo RialFit / RialFit en [Proyecto])
- *  - Score grande
- *  - Etiqueta cualitativa pequeña
+ * Fila de RialFit (sin borde ni fondo): glosa + proyecto + score grande coloreado.
+ * Las filas se separan visualmente con un divisor (border-t) en el contenedor.
  */
-function FitCard({ glosa, projectName, score, size = 'md', highlight, className }: FitCardProps) {
-  const scoreSize = size === 'sm' ? 'text-lg' : size === 'lg' ? 'text-3xl' : 'text-2xl';
-  const padding = size === 'sm' ? 'p-2' : 'p-3';
-
+function FitRow({ glosa, projectName, score, size = 'md', className }: FitRowProps) {
+  const scoreSize = size === 'sm' ? 'text-xl' : size === 'lg' ? 'text-3xl' : 'text-2xl';
   return (
-    <div
-      className={cn(
-        'rounded-md border border-border bg-card flex items-center gap-2.5',
-        padding,
-        className,
-      )}
-    >
-      {/* Score circular */}
-      <div
-        className={cn(
-          'flex items-center justify-center rounded-md border font-semibold tabular-nums shrink-0',
-          SCORE_RING[score],
-          scoreSize,
-          size === 'sm' ? 'w-9 h-9' : size === 'lg' ? 'w-14 h-14' : 'w-11 h-11',
-        )}
-      >
-        {score}
-      </div>
-
-      {/* Texto */}
+    <div className={cn('flex items-center gap-3 py-2', className)}>
       <div className="min-w-0 flex-1">
         <p className={cn(
           'text-muted-foreground uppercase tracking-wide leading-tight',
@@ -84,6 +51,9 @@ function FitCard({ glosa, projectName, score, size = 'md', highlight, className 
           {RIALFIT_LABELS[score]}
         </p>
       </div>
+      <div className={cn('font-semibold tabular-nums shrink-0', scoreSize, SCORE_TEXT[score])}>
+        {score}
+      </div>
     </div>
   );
 }
@@ -100,88 +70,70 @@ export function RialFitCompare({
   const hasGap = delta > 0;
   const showTop = !!(topScore && topProjectName);
 
-  // Compact: para cards de Kanban — dos cards apiladas, mínimas
+  // Compact: para cards de Kanban — filas separadas por divisor, sin chips
   if (variant === 'compact') {
     return (
-      <div className={cn('space-y-1.5', className)}>
-        <FitCard
+      <div className={cn('divide-y divide-border', className)}>
+        <FitRow
           glosa="RialFit proyecto interés"
           projectName={interestProjectName}
           score={interestScore}
           size="sm"
         />
         {showTop && (
-          <div className="relative">
-            <FitCard
-              glosa="Máximo RialFit"
-              projectName={topProjectName!}
-              score={topScore!}
-              size="sm"
-              highlight={hasGap}
-            />
-            {hasGap && (
-              <span className="absolute -top-1.5 -right-1.5 text-[9px] font-bold text-primary-foreground bg-primary px-1.5 py-0.5 rounded-full leading-none flex items-center gap-0.5 shadow-sm">
-                <TrendingUp className="w-2.5 h-2.5" />+{delta}
-              </span>
-            )}
-          </div>
+          <FitRow
+            glosa="Máximo RialFit"
+            projectName={topProjectName!}
+            score={topScore!}
+            size="sm"
+          />
         )}
       </div>
     );
   }
 
-  // Inline: para tabla — dos mini cards lado a lado
+  // Inline: para tabla — filas en columna separadas por divisor
   if (variant === 'inline') {
     return (
-      <div className={cn('flex items-center gap-2 min-w-[280px]', className)}>
-        <FitCard
+      <div className={cn('divide-y divide-border min-w-[240px]', className)}>
+        <FitRow
           glosa="RialFit interés"
           projectName={interestProjectName}
           score={interestScore}
           size="sm"
-          className="flex-1"
         />
         {showTop && (
-          <div className="relative flex-1">
-            <FitCard
-              glosa="Máximo RialFit"
-              projectName={topProjectName!}
-              score={topScore!}
-              size="sm"
-              highlight={hasGap}
-            />
-            {hasGap && (
-              <span className="absolute -top-1.5 -right-1.5 text-[9px] font-bold text-primary-foreground bg-primary px-1.5 py-0.5 rounded-full leading-none shadow-sm">
-                +{delta}
-              </span>
-            )}
-          </div>
+          <FitRow
+            glosa="Máximo RialFit"
+            projectName={topProjectName!}
+            score={topScore!}
+            size="sm"
+          />
         )}
       </div>
     );
   }
 
-  // Detailed: vista detalle — cards apiladas verticalmente con jerarquía clara
+  // Detailed: vista detalle — filas grandes apiladas con divisor
   return (
-    <div className={cn('space-y-3', className)}>
+    <div className={cn('space-y-2', className)}>
       <p className="text-[10px] text-muted-foreground uppercase tracking-wide">
         RialFit – expectativa vs realidad
       </p>
 
-      <div className="flex flex-col gap-2">
-        <FitCard
+      <div className="divide-y divide-border">
+        <FitRow
           glosa="RialFit proyecto de interés"
           projectName={interestProjectName}
           score={interestScore}
           size="lg"
         />
         {showTop && (
-          <FitCard
+          <FitRow
             glosa="Máximo RialFit disponible"
             projectName={topProjectName!}
             score={topScore!}
             size="lg"
-            highlight={hasGap}
           />
         )}
       </div>
