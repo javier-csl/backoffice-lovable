@@ -396,7 +396,7 @@ export default function LeadDetail() {
                 </div>
                 <div className="pt-2 border-t border-border">
                   <p className="text-[10px] text-muted-foreground">Fecha de screening</p>
-                  <p className="text-sm">{format(new Date(lead.createdAt), "d 'de' MMMM, yyyy", { locale: es })}</p>
+                  <p className="text-sm">{format(new Date(lead.createdAt), 'dd/MM/yyyy')}</p>
                 </div>
               </CardContent>
             </Card>
