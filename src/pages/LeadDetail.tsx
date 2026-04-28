@@ -117,7 +117,6 @@ export default function LeadDetail() {
                 <Clock className="w-3 h-3" />
                 Última actividad: {formatDistanceToNow(new Date(lead.lastActivity), { addSuffix: true, locale: es })}
               </span>
-              <OfeliaBadge status={lead.ofeliaStatus} size="md" />
             </div>
           </div>
 
