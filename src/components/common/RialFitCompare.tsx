@@ -12,11 +12,11 @@ interface RialFitCompareProps {
 }
 
 const SCORE_RING: Record<RialFitScore, string> = {
-  1: 'text-rialfit-1 border-rialfit-1/30 bg-rialfit-1/5',
-  2: 'text-rialfit-2 border-rialfit-2/30 bg-rialfit-2/5',
-  3: 'text-rialfit-3 border-rialfit-3/30 bg-rialfit-3/5',
-  4: 'text-rialfit-4 border-rialfit-4/30 bg-rialfit-4/5',
-  5: 'text-rialfit-5 border-rialfit-5/30 bg-rialfit-5/5',
+  1: 'text-rialfit-1 border-border bg-card',
+  2: 'text-rialfit-2 border-border bg-card',
+  3: 'text-rialfit-3 border-border bg-card',
+  4: 'text-rialfit-4 border-border bg-card',
+  5: 'text-rialfit-5 border-border bg-card',
 };
 
 const SCORE_TEXT: Record<RialFitScore, string> = {
@@ -49,9 +49,8 @@ function FitCard({ glosa, projectName, score, size = 'md', highlight, className 
   return (
     <div
       className={cn(
-        'rounded-md border flex items-center gap-2.5',
+        'rounded-md border border-border bg-card flex items-center gap-2.5',
         padding,
-        highlight ? 'border-primary/40 bg-primary/5' : 'border-border bg-card',
         className,
       )}
     >
