@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getLeadById, getMeetingsByLeadId, MOCK_ACTIVITY, MOCK_DOCUMENTS, getTopRialFitProject, getInterestProjectRialFit } from '@/data/mockData';
 import { RialFitBadge } from '@/components/common/RialFitBadge';
+import { RialFitCompare } from '@/components/common/RialFitCompare';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
