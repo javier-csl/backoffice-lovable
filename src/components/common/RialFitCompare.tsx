@@ -162,21 +162,14 @@ export function RialFitCompare({
     );
   }
 
-  // Detailed: vista detalle — dos cards grandes con glosa contextual
+  // Detailed: vista detalle — cards apiladas verticalmente con jerarquía clara
   return (
-    <div className={cn('space-y-2', className)}>
-      <div className="flex items-center justify-between">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wide">
-          RialFit – expectativa vs realidad
-        </p>
-        {hasGap && (
-          <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded inline-flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" />+{delta} en otro proyecto
-          </span>
-        )}
-      </div>
+    <div className={cn('space-y-3', className)}>
+      <p className="text-[10px] text-muted-foreground uppercase tracking-wide">
+        RialFit – expectativa vs realidad
+      </p>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="flex flex-col gap-2">
         <FitCard
           glosa="RialFit proyecto de interés"
           projectName={interestProjectName}
