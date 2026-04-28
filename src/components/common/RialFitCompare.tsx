@@ -18,6 +18,14 @@ const SCORE_TEXT: Record<RialFitScore, string> = {
   5: 'text-rialfit-5',
 };
 
+const SCORE_BORDER: Record<RialFitScore, string> = {
+  1: 'border-rialfit-1',
+  2: 'border-rialfit-2',
+  3: 'border-rialfit-3',
+  4: 'border-rialfit-4',
+  5: 'border-rialfit-5',
+};
+
 interface FitRowProps {
   glosa: string;
   projectName: string;
