@@ -128,9 +128,18 @@ function LeadCard({ lead, index }: { lead: Lead; index: number }) {
             </DropdownMenu>
           </div>
           
-          <p className="text-xs text-muted-foreground mb-2">
-            {lead.projectName} – {lead.comuna}
-          </p>
+          {(() => {
+            const comunas = Array.from(
+              new Set(
+                [lead.comuna, top?.project.comuna, 'Providencia', 'Ñuñoa'].filter(Boolean) as string[],
+              ),
+            ).slice(0, 3);
+            return (
+              <p className="text-xs text-muted-foreground mb-2">
+                Busca en: <span className="text-foreground">{comunas.join(', ')}</span>
+              </p>
+            );
+          })()}
           
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-semibold">{lead.ticketUF.toLocaleString()} UF</span>
